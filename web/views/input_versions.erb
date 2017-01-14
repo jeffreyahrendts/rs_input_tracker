@@ -12,7 +12,13 @@
 </head>
 <body>
 <div class="container">
-  <h1>Changes <%= array.array_name %> - <%= array.array_id %> - <%= input_name %> </h1>
+  <h1>Input Versions: <%= input_name %> </h1>
+  <ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/accounts/<%= account[:id] %>/"><%= account[:name] %></a></li>
+    <li><a href="/accounts/<%= account[:id] %>/arrays/<%= array.array_id %>/"><%= array.array_name %></a></li>
+    <li class="active"><%= input_name %></li>
+  </ol>
   <table class="table table-striped table-bordered table-hover list-table">
     <thead>
 	    <tr>

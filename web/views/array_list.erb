@@ -12,7 +12,11 @@
 </head>
 <body>
 <div class="container">
-  <h1>Arrays</h1>
+  <h1>Arrays List: <%= account[:name] %></h1>
+  <ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li class="active"><a href="/accounts/<%= account[:id] %>/"><%= account[:name] %></a></li>
+  </ol>
   <table class="table table-striped table-bordered table-hover list-table">
     <thead>
 	    <tr>
@@ -26,7 +30,7 @@
       <tr>
         <td><a href="./arrays/<%= array.array_id %>/"><%= array.array_id %></a></td>
         <td> <%= array.array_name %></td>
-	      <td><a target="_blank" href="https://my.rightscale.com/acct/<%= account_id %>/server_arrays/<%= array.array_id %>">https://my.rightscale.com/acct/<%= account_id %>/server_arrays/<%= array.array_id %></a></td>
+	      <td><a target="_blank" href="https://my.rightscale.com/acct/<%= account[:id] %>/server_arrays/<%= array.array_id %>">¯\_(ツ)_/¯</a></td>
       </tr>
     <% end %>
     </tbody>

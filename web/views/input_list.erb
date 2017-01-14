@@ -12,7 +12,12 @@
 </head>
 <body>
 <div class="container">
-  <h1>Inputs for <%= array.array_name %> - <%= array.array_id %> </h1>
+  <h1>Inputs List: <%= array.array_name %></h1>
+  <ol class="breadcrumb">
+    <li><a href="/">Home</a></li>
+    <li><a href="/accounts/<%= account[:id] %>/"><%= account[:name] %></a></li>
+    <li class="active"><%= array.array_name %></li>
+  </ol>
   <table class="table table-striped table-bordered table-hover list-table">
     <thead>
 	    <tr>

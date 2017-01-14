@@ -44,7 +44,7 @@ class Input < ActiveRecord::Base
 
   def self.list_versions(account_id,array_id,input_name)
     Input.table_name = account_id
-    Input.where(:account_id => account_id, :array_id => array_id, :input_name => input_names)
+    Input.where(:account_id => account_id, :array_id => array_id, :input_name => input_name)
   end
 
 
@@ -126,6 +126,11 @@ class Account < ActiveRecord::Base
 
   def self.list
     Account.all
+  end
+
+  def self.get_name(account_id)
+    account = Account.where(:account_id => account_id).first
+    account.account_name
   end
 
   def self.create_table

@@ -14,12 +14,26 @@
   <script src="js/lib/modernizr-2.5.3.js"></script>
 </head>
 <body>
-  <div class="container">
-    <h2 class="form-audit-heading">Select Account</h2>
+<div class="container">
+  <h1>Select Account</h1>
+  <table class="table table-striped table-bordered table-hover list-table">
+    <thead>
+    <tr>
+      <th>Account ID</th>
+      <th>Account Name</th>
+      <th>Rightscale Link</th>
+    </tr>
+    </thead>
+    <tbody>
     <% accounts.each do |account| %>
-      <h3><a href="accounts/<%= account.account_id %>/"><%= account.account_name %></a></h3>
+        <tr>
+          <td><a href="/accounts/<%=  account.account_id %>/"> <%= account.account_id %></a></td>
+          <td> <%= account.account_name %></td>
+          <td><a target="_blank" href="https://my.rightscale.com/acct/<%= account[:id] %>/%>">¯\_(ツ)_/¯</a></td>
+        </tr>
     <% end %>
-
+    </tbody>
+  </table>
   </div> <!-- /container -->
   
   <script src="js/lib/jquery-1.7.1.js"></script>

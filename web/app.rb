@@ -11,7 +11,9 @@ end
 get '/accounts/:account_id/' do
   account_id = params['account_id']
   array_list = ServerArray.list(account_id)
-  erb :array_list, :locals => {:arrays => array_list,:account_id => account_id}
+  account_name = Account.get_name(account_id)
+  erb :array_list, :locals => {:arrays => array_list,
+                               :account => {:name => account_name, :id => account_id}}
 end
 
 get '/accounts/:account_id/arrays/:array_id/' do
@@ -19,7 +21,10 @@ get '/accounts/:account_id/arrays/:array_id/' do
   array_id = params['array_id']
   input_list = Input.list(account_id,array_id)
   array_data = ServerArray.where(:array_id => array_id,:account_id => account_id).first
-  erb :input_list, :locals => {:inputs => input_list, :array => array_data }
+  account_name = Account.get_name(account_id)
+  erb :input_list, :locals => {:inputs => input_list,
+                               :array => array_data,
+                               :account => {:name => account_name, :id => account_id}}
 end
 
 get '/accounts/:account_id/arrays/:array_id/:input_name/?' do
@@ -28,7 +33,11 @@ get '/accounts/:account_id/arrays/:array_id/:input_name/?' do
   input_name = params[:input_name]
   input_versions = Input.list_versions(account_id,array_id,input_name)
   array_data = ServerArray.where(:array_id => array_id,:account_id => account_id).first
-  erb :input_versions, :locals => {:versions => input_versions,:input_name => input_name,:array => array_data}
+  account_name = Account.get_name(account_id)
+  erb :input_versions, :locals => {:versions => input_versions,
+                                   :input_name => input_name,
+                                   :array => array_data,
+                                   :account => {:name => account_name, :id => account_id}}
 end
 
 get '/app.js' do
@@ -38,6 +47,7 @@ end
 
 get '/update' do
   InputAuditor.new.run
+  status 200
 end
 
 get '/update/:account_id/?' do
