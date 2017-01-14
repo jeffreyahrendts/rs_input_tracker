@@ -1,0 +1,8 @@
+---
+:rightscale:
+  :email: 'Rightscale account email address with access to all accounts that need to be tracked'
+  :password: 'password for account👆'
+  :account_id:
+    - rs_aact_id_1
+    - rs_acct_id_2
+    - rs_acct_id_you_get_the_picture
