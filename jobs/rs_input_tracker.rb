@@ -39,7 +39,6 @@ class InputAuditor
     write_audit_to_file(sorted_manifest, 'manifest', account_id)
   end
 
-
   def extract_and_sort_inputs(inputs)
     array_inputs = {}
     inputs.each do |input|
@@ -50,36 +49,5 @@ class InputAuditor
 
   def write_audit_to_file(sorted_inputs, filename, account_id)
     Input.create_batch(sorted_inputs,filename,account_id)
-    # path = "#{account_id}/#{filename}.json"
-    # Dir.mkdir("#{account_id}") unless Dir.exist?("#{account_id}")
-    # File.open(path, 'w') do |f|
-    #   f.write(JSON.pretty_generate(sorted_inputs))
-    # end
   end
 end
-
-class GitCommit
-  def initialize
-
-  end
-
-  def run_shell_command(cmd)
-    res=`#{cmd}`
-    res
-  end
-
-  def push_changes
-    puts 'preparing commit'
-    cmd = 'git pull'
-    run_shell_command(cmd)
-    cmd = 'git add -A'
-    run_shell_command(cmd)
-    cmd = "git commit -a -m \'autocommit from input auditor\'"
-    run_shell_command(cmd)
-    cmd = 'git push'
-    run_shell_command(cmd)
-  end
-end
-
-# InputAuditor.new.run
-# GitCommit.new.push_changes

@@ -44,7 +44,6 @@ get '/app.js' do
   coffee :app
 end
 
-
 get '/update' do
   InputAuditor.new.run
   status 200

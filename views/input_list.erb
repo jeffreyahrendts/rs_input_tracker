@@ -23,7 +23,8 @@
 	    <tr>
 	      <th>Input Name</th>
 	      <th>Input Type</th>
-		    <th>Input Value</th>
+          <th>Version</th>
+          <th>Input Value</th>
 	    </tr>
     </thead>
     <tbody>
@@ -31,6 +32,7 @@
       <tr>
         <td><a href="<%= input.input_name %>"><%= input.input_name %></a></td>
         <td> <%= input.input_value.split(':')[0] %></td>
+        <td><%= input.version %></td>
         <td><%= input.input_value.split(':')[1] %></td>
       </tr>
     <% end %>

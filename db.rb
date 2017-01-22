@@ -28,7 +28,7 @@ class Input < ActiveRecord::Base
           Input.create(:account_id => account_id, :array_id => array_id, :input_name => name, :input_value => value, :version => new_version)
           puts "updated #{name} to version #{new_version}"
         else
-          puts "no need to update #{name} for #{array_id} unchanged"
+          puts "Input #{name} in array:#{array_id} unchanged, skipping"
         end
       else
         Input.create(:account_id => account_id, :array_id => array_id, :input_name => name, :input_value => value, :version => 1)
@@ -37,12 +37,12 @@ class Input < ActiveRecord::Base
     end
   end
 
-  def self.list(account_id,array_id)
+  def self.list(account_id, array_id)
     Input.table_name = account_id
-    Input.most_recent(account_id,array_id)
+    Input.most_recent(account_id, array_id)
   end
 
-  def self.list_versions(account_id,array_id,input_name)
+  def self.list_versions(account_id, array_id, input_name)
     Input.table_name = account_id
     Input.where(:account_id => account_id, :array_id => array_id, :input_name => input_name)
   end
@@ -64,7 +64,7 @@ class Input < ActiveRecord::Base
     self.find_by_sql(query)
   end
 
-  def self.as_of(account_id, array_id,datetime)
+  def self.as_of(account_id, array_id, datetime)
     query = <<-SQL
       SELECT * FROM `#{account_id}` t WHERE
         array_id = t.array_id
@@ -74,7 +74,7 @@ class Input < ActiveRecord::Base
               `#{account_id}`
           WHERE
               array_id = t.array_id
-                  AND input_name = t.input_name)
+                  AND input_name = t.input_name AND created_at <= datetime )
       AND array_id = #{array_id} AND account_id = #{account_id}
     SQL
     self.find_by_sql(query)
