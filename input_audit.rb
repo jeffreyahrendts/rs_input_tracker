@@ -4,19 +4,26 @@ require 'yaml'
 require 'json'
 
 
-
 class InputAuditor
   def initialize(account = nil)
-    @rightscale_credentials = YAML.load_file('./jobs/rightscale.yml')[:rightscale]
+    # Defining Constants
+    @PRODUCT_NAME = ENV['PRODUCT_NAME'].upcase
+    @ENVIRONMENT = ENV['ENVIRONMENT'].upcase
+    @REGION = ENV['REGION'].downcase
+
+    # Removed load configuration from yaml
+    @accountids = get_parameters( [ @ENVIRONMENT, @PRODUCT_NAME, "RS_ACCOUNTS" ].join('_'), @REGION ).split(',')
     @threads = []
     @mutex = Mutex.new
-    @rightscale_credentials[:account_id] = [account] unless account.nil?
+    @accountids = [account] unless account.nil?
+    @RS_EMAIL = get_parameters( [ @ENVIRONMENT, @PRODUCT_NAME, "EMAIL" ].join('_'), @REGION )
+    @RS_PASSWORD = get_parameters( [@ENVIRONMENT, @PRODUCT_NAME, "PASSWORD" ].join('_'), @REGION )
   end
 
   def run
-    rs_email = @rightscale_credentials[:email]
-    rs_password = @rightscale_credentials[:password]
-    rs_accounts = @rightscale_credentials[:account_id]
+    rs_email = @RS_EMAIL
+    rs_password = @RS_PASSWORD
+    rs_accounts = @accountids
     rs_accounts.each do |rs_account|
       puts "connecting to RS account #{rs_account}"
       rs_client = RightApi::Client.new(:email => rs_email, :password => rs_password, :account_id => rs_account, :timeout => nil)
@@ -58,5 +65,17 @@ class InputAuditor
 
   def write_audit(sorted_inputs, array_id, account_id)
     Input.create_batch(sorted_inputs,array_id,account_id)
+  end
+
+  def get_parameters(name, region)
+    response = `aws ssm get-parameters --names #{name} --region #{region} --with-decryption`
+    begin
+      response_value = JSON.parse(response)['Parameters'][0]['Value']
+    rescue NoMethodError
+      raise InitializingEnvironmentError, "Unable to retrieve parameter from AWS Parameter Store."
+    rescue JSON::ParserError
+      raise InitializingEnvironmentError, "Missing Parameter: #{name}."
+    end
+    return response_value
   end
 end
