@@ -75,6 +75,8 @@ class InputAuditor
       raise InitializingEnvironmentError, "Unable to retrieve parameter from AWS Parameter Store."
     rescue JSON::ParserError
       raise InitializingEnvironmentError, "Missing Parameter: #{name}."
+    rescue => e
+      raise("Failed to retrieve param #{name}, Reason: #{e.message}")
     end
     return response_value
   end
