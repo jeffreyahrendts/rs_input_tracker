@@ -29,13 +29,13 @@
         <tr>
           <td><a href="/accounts/<%=  account.account_id %>/"> <%= account.account_id %></a></td>
           <td> <%= account.account_name %></td>
-          <td><a target="_blank" href="https://my.rightscale.com/acct/<%= account[:id] %>/%>">¯\_(ツ)_/¯</a></td>
+          <td><a target="_blank" href="https://my.rightscale.com/acct/<%= account.account_id %>/">¯\_(ツ)_/¯</a></td>
         </tr>
     <% end %>
     </tbody>
   </table>
   </div> <!-- /container -->
-  
+
   <script src="js/lib/jquery-1.7.1.js"></script>
   <script src="js/lib/bootstrap.min.js"></script>
   <script src="app.js"></script>
