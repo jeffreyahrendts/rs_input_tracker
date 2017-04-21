@@ -80,6 +80,30 @@ class Input < ActiveRecord::Base
     self.find_by_sql(query)
   end
 
+  def self.audit_account_input(account_id, input_name)
+    query = <<-SQL
+      SELECT ANY_VALUE(id) as id, ANY_VALUE(account_id) as account_id,
+        array_id, ANY_VALUE(input_value) as input_value,
+        MAX(version) as version, ANY_VALUE(created_at) as created_at,
+        ANY_VALUE(updated_at) as updated_at
+        FROM `#{account_id}` WHERE array_id IN (
+          SELECT DISTINCT array_id FROM `#{account_id}`
+          WHERE input_name = '#{input_name}' )
+      AND input_name = '#{input_name}' GROUP BY array_id;
+    SQL
+    self.find_by_sql(query)
+  end
+
+  def self.audit_input(accounts, input_name)
+    # Declare a variable to hold results
+    results = Hash.new
+    accounts.each do | account |
+      Input.table_name = account.account_id
+      results.store( account.account_name, audit_account_input(account.account_id , input_name) )
+    end
+    return results
+  end
+
   def self.create_table(account_id)
     ActiveRecord::Base.connection.create_table "#{account_id}".to_sym do |t|
       t.integer :account_id, :null => false
@@ -95,6 +119,19 @@ end
 class ServerArray < ActiveRecord::Base
   def self.list(account_id)
     ServerArray.where(:account_id => account_id)
+  end
+
+  def self.full_list(accounts)
+    # Declare a variable to hold results
+    results = Hash.new
+    accounts.each do | account |
+      temp_hash = Hash.new
+      list( account.account_id ).each do | server_array |
+        temp_hash.store( server_array.array_id, server_array.array_name )
+      end
+      results.store( account.account_name, temp_hash )
+    end
+    return results
   end
 
   def self.create_batch(account_id, arrays)

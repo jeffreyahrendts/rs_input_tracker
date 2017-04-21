@@ -53,3 +53,13 @@ get '/update/:account_id/?' do
   InputAuditor.new(params[:account_id]).run
   redirect to('/')
 end
+
+get '/report/:input_name/' do
+  input_name = params[:input_name]
+  account_list = Account.list
+  server_arrays = ServerArray.full_list(account_list)
+  inputs = Input.audit_input(account_list, input_name)
+  erb :input_report, :locals => {:inputs => inputs,
+                                 :arrays => server_arrays,
+                                 :input_name => input_name}
+end
