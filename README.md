@@ -3,7 +3,11 @@
 Setup
 
 1. Create schema in mysql
-2. Set environment variables in EC2 SSM Store, using PREFIX `[ENVIRONMENT]_INPUTTRACKER`
+2. Set environment variables on host server
+   1. PRODUCT_NAME
+   2. ENVIRONMENT
+   3. REGION <== `AWS Region`
+3. Setup the following parameters in EC2 SSM Store, using PREFIX `[ENVIRONMENT]_INPUTTRACKER_`
    1. DB_HOST
    2. DB_NAME
    3. DB_USERNAME
