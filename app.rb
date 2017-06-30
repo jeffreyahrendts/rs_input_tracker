@@ -63,3 +63,13 @@ get '/report/:input_name/' do
                                  :arrays => server_arrays,
                                  :input_name => input_name}
 end
+
+get '/report_value/:input_value/' do
+  input_value = params[:input_value]
+  account_list = Account.list
+  server_arrays = ServerArray.full_list(account_list)
+  inputs = Input.audit_input_value(account_list, input_value)
+  erb :input_value_report, :locals => {:inputs => inputs,
+                                 :arrays => server_arrays,
+                                 :input_value => input_value}
+end

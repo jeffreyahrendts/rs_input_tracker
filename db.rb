@@ -94,12 +94,36 @@ class Input < ActiveRecord::Base
     self.find_by_sql(query)
   end
 
+  def self.audit_account_input_value(account_id, input_value)
+    query = <<-SQL
+      SELECT ANY_VALUE(id) as id, ANY_VALUE(account_id) as account_id,
+        array_id, ANY_VALUE(input_name) as input_name,
+        MAX(version) as version, ANY_VALUE(created_at) as created_at,
+        ANY_VALUE(updated_at) as updated_at
+        FROM `#{account_id}` WHERE array_id IN (
+          SELECT DISTINCT array_id FROM `#{account_id}`
+          WHERE input_value like '%:#{input_value}' )
+      AND input_value like '%:#{input_value}' GROUP BY array_id;
+    SQL
+    self.find_by_sql(query)
+  end
+
   def self.audit_input(accounts, input_name)
     # Declare a variable to hold results
     results = Hash.new
     accounts.each do | account |
       Input.table_name = account.account_id
       results.store( account.account_name, audit_account_input(account.account_id , input_name) )
+    end
+    return results
+  end
+
+  def self.audit_input_value(accounts, input_value)
+    # Declare a variable to hold results
+    results = Hash.new
+    accounts.each do | account |
+      Input.table_name = account.account_id
+      results.store( account.account_name, audit_account_input_value(account.account_id , input_value) )
     end
     return results
   end
